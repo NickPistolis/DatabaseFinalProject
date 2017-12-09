@@ -17,7 +17,7 @@
 	           exit();
 	       }
     
-    $query = "SELECT * FROM library";
+    $query = "SELECT * FROM Movies";
         $result = $mysqli->query($query);
 
     echo "<table class='table table-hover'>"; 
@@ -37,10 +37,10 @@
     $mysqli->close();    
 ?>
     
-    <form method="post" action="/challenge4/drop.php">
+    <form method="post" action="/challenge4/dropMovie.php">
     <div class="input-field inline">
-        <label for="ISBN">Please type the ISBN of the book you would like to remove</label>
-          <input id="ISBN" type="text" class="validate" name="isbn" required>
+        <label for="ISBN">Please type the Title of the movie you would like to remove</label>
+          <input id="title" type="text" class="validate" name="title" required>
           
         </div>
         
@@ -51,18 +51,16 @@
 	           echo "Failed to connect to MySQLI on Line 52";
 	           exit();
 	       }
-        
-        $isbnValue=$_POST['isbn'];
-        
-        $query1 = "SELECT COUNT(*) FROM library WHERE isbn = '$isbnValue'";
-        $result1 = $mysqli->query($query1);
-        if($result1->num_rows>0)
+        $titleValue=$_POST['title'];
+        $query = "SELECT COUNT(*) FROM Movies WHERE Title = '$titleValue'";
+        $result = $mysqli->query($query);
+        if($result->num_rows>0)
         {
-            $query2 = "DELETE FROM library WHERE isbn = '$isbnValue'";
-            $result2 = $mysqli->query($query2);         
+            $query = "DELETE FROM Movies WHERE Title = '$titleValue'";
+            $result = $mysqli->query($query);            
         }
         else{
-            echo "Sorry that isbn doesnt exist in the library";
+            echo "Sorry that title doesnt exist in the library";
         }
         echo "<table class='table table-hover'>"; 
     while($fieldInfo = mysqli_fetch_field($result)){
@@ -79,7 +77,10 @@
     }
     echo "</table>";
     $mysqli->close(); 
-              
+        
+        
+
+      header("Refresh:0");        
     ?>
         
 </form>

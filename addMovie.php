@@ -23,28 +23,28 @@
 </form>
     
     <div class="row">
-    <form class="col s12" action="/challenge4/add.php" method="post">
+    <form class="col s12" action="/challenge4/addMovie.php" method="post">
       <div class="row">
         <div class="input-field inline">
-          <label for="first_name">ISBN</label>
-          <input id="first_name" type="text" class="validate" name="isbn" required>
+          <label for="first_name">Title</label>
+          <input id="first_name" type="text" class="validate" name="title" required>
           
         </div>
         <div class="input-field inline">
-            <label for="Author">Name</label>
-          <input id="Author" type="text" class="validate" name="name" required>
+            <label for="Author">Genre</label>
+          <input id="Author" type="text" class="validate" name="genre" required>
           
         </div>
       </div>
       <div class="row">
         <div class="input-field inline">
-          <label for="ISBN">Author</label>
-          <input id="ISBN" type="text" class="validate" name="author" required>
+          <label for="ISBN">Rating</label>
+          <input id="ISBN" type="text" class="validate" name="rating" required>
            
         </div>
           <div class="input-field inline">
-          <label for="publisher">Publisher</label>
-          <input id="publisher" type="text" class="validate" name="publisher" required>
+          <label for="publisher">Producer</label>
+          <input id="publisher" type="text" class="validate" name="producer" required>
           
         </div>
       </div>
@@ -55,14 +55,14 @@
          
         </div>
           <div class="input-field inline">
-         <label for="Edition">Edition</label>
-          <input id="Edition" type="number" class="validate" name="edition"  required>
+         <label for="Edition">Studio</label>
+          <input id="Edition" type="number" class="validate" name="studio"  required>
           
         </div>
       </div>
         <div class="row">
         <div class="input-field inline">
-            <label for="test5">Hardcover?</label>
+            <label for="test5">Reboot?</label>
            <input type="checkbox" name="type" />
       
         </div>
@@ -89,37 +89,42 @@
 	           echo "Failed to connect to MySQLI on Line 90";
 	           exit();
 	       }
-        $query = "INSERT INTO library VALUES(?,?,?,?,?,?,?,?)";
-        $stmt = $mysqli->stmt_init();
-            if(!$stmt->prepare($query))
+        $query = "INSERT INTO Movies VALUES(?,?,?,?,?,?,?,?)";
+        #$stmt = $mysqli->stmt_init();
+            #if($stmt->prepare($query))
+            if(!($stmt = $mysqli->prepare($query)))
             {
                 echo "Didn't prepare the statement properly";
+                #print_r($stmt->error_list);
+                #print_r($mysqli->error_list);
+                #var_dump($stmt);
+                #var_dump($mysqli);
                 exit();
             }
         
-        $numBooks = $_POST['numBooks'] === 'on'?1:0;
-        $type =$_POST['type'] === 'on'?1:0;
+        $numMovies = $_POST['NumMovies'] === 'on'?1:0;
+        $reboot =$_POST['reboot'] === 'on'?1:0;
         $stmt->bind_param(
             'ssssssii',
-            $_POST['isbn'],
-            $_POST['name'],
-            $_POST['author'],
-            $_POST['publisher'],
+            $_POST['title'],
+            $_POST['genre'],
+            $_POST['rating'],
+            $_POST['producer'],
+            $_POST['studio'],
             $_POST['year'],
-            $_POST['edition'],
-            $type,
-            $numBooks
+            $reboot,
+            $numMovies
         );
         if(!$stmt->execute()){
             echo "FAILURE";
             print_r($stmt->error_list);
         }
         
-        $query = "SELECT isbn, name FROM library";
+        $query = "SELECT * FROM Movies";
         $result = $mysqli->query($query);
-        echo "Hello";
-    /*echo "<table class='table table-hover'>"; 
-    echo "Number of Results: " . $result->num_rows; 
+/*
+   echo "<table class='table table-hover'>"; 
+   echo "Number of Results: " . $result->num_rows; 
 
 
     while($fieldInfo = mysqli_fetch_field($result)){
